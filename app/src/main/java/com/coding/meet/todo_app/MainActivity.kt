@@ -9,6 +9,8 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
+import com.coding.meet.todo_app.adapters.TaskRVVBListAdapter
 import com.coding.meet.todo_app.adapters.TaskRVViewBindingAdapter
 import com.coding.meet.todo_app.adapters.TaskRecyclerViewAdapter
 import com.coding.meet.todo_app.databinding.ActivityMainBinding
@@ -162,7 +164,7 @@ class MainActivity : AppCompatActivity() {
         // Update Task End
 
 
-        val taskRecyclerViewAdapter = TaskRVViewBindingAdapter { type, position, task ->
+        val taskRVVBListAdapter = TaskRVVBListAdapter { type, position, task ->
             if (type == "delete") {
                 taskViewModel
 //                .deleteTask(task)
@@ -233,11 +235,18 @@ class MainActivity : AppCompatActivity() {
                 updateTaskDialog.show()
             }
         }
-        mainBinding.taskRV.adapter = taskRecyclerViewAdapter
-        callGetTaskList(taskRecyclerViewAdapter)
+        mainBinding.taskRV.adapter = taskRVVBListAdapter
+        taskRVVBListAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver()
+        {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                mainBinding.taskRV.smoothScrollToPosition(positionStart)
+            }
+        })
+        callGetTaskList(taskRVVBListAdapter)
     }
 
-    private fun callGetTaskList(taskRecyclerViewAdapter: TaskRVViewBindingAdapter) {
+    private fun callGetTaskList(taskRecyclerViewAdapter: TaskRVVBListAdapter) {
         loadingDialog.show()
         CoroutineScope(Dispatchers.Main).launch {
             taskViewModel.getTaskList().collect {
@@ -249,7 +258,7 @@ class MainActivity : AppCompatActivity() {
                     Status.SUCCESS -> {
                         it.data?.collect { taskList ->
                             loadingDialog.dismiss()
-                            taskRecyclerViewAdapter.addAllTask(taskList)
+                            taskRecyclerViewAdapter.submitList(taskList)
                         }
                     }
 
