@@ -10,26 +10,30 @@ import com.coding.meet.todo_app.utils.Resource
 class TaskViewModel(application: Application) : AndroidViewModel(application) {
 
     private val taskRepository = TaskRepository(application)
+    val taskStateFlow get() =  taskRepository.taskStateFlow
+    val statusLiveData get() =  taskRepository.statusLiveData
 
-    fun getTaskList() = taskRepository.getTaskList()
-
-    fun insertTask(task: Task): MutableLiveData<Resource<Long>> {
-        return taskRepository.insertTask(task)
+    fun getTaskList() {
+        taskRepository.getTaskList()
     }
 
-    fun deleteTask(task: Task): MutableLiveData<Resource<Int>> {
-        return taskRepository.deleteTask(task)
+    fun insertTask(task: Task){
+        taskRepository.insertTask(task)
     }
 
-    fun deleteTaskUsingId(taskId: String): MutableLiveData<Resource<Int>> {
-        return taskRepository.deleteTaskUsingId(taskId)
+    fun deleteTask(task: Task) {
+        taskRepository.deleteTask(task)
     }
 
-    fun updateTask(task: Task): MutableLiveData<Resource<Int>> {
-        return taskRepository.updateTask(task)
+    fun deleteTaskUsingId(taskId: String){
+        taskRepository.deleteTaskUsingId(taskId)
     }
 
-    fun updateTaskPaticularField(taskId: String,title:String,description:String): MutableLiveData<Resource<Int>> {
-        return taskRepository.updateTaskPaticularField(taskId, title, description)
+    fun updateTask(task: Task) {
+        taskRepository.updateTask(task)
+    }
+
+    fun updateTaskPaticularField(taskId: String,title:String,description:String) {
+        taskRepository.updateTaskPaticularField(taskId, title, description)
     }
 }
