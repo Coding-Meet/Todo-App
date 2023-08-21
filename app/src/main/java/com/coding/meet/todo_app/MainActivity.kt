@@ -1,22 +1,25 @@
 package com.coding.meet.todo_app
 
 import android.app.Dialog
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.coding.meet.todo_app.adapters.TaskRVVBListAdapter
-import com.coding.meet.todo_app.adapters.TaskRVViewBindingAdapter
-import com.coding.meet.todo_app.adapters.TaskRecyclerViewAdapter
 import com.coding.meet.todo_app.databinding.ActivityMainBinding
 import com.coding.meet.todo_app.models.Task
 import com.coding.meet.todo_app.utils.Status
+import com.coding.meet.todo_app.utils.StatusResult
+import com.coding.meet.todo_app.utils.StatusResult.Added
+import com.coding.meet.todo_app.utils.StatusResult.Deleted
+import com.coding.meet.todo_app.utils.StatusResult.Updated
 import com.coding.meet.todo_app.utils.clearEditText
+import com.coding.meet.todo_app.utils.hideKeyBoard
 import com.coding.meet.todo_app.utils.longToastShow
 import com.coding.meet.todo_app.utils.setupDialog
 import com.coding.meet.todo_app.utils.validateEditText
@@ -25,6 +28,8 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.util.Date
 import java.util.UUID
@@ -100,33 +105,16 @@ class MainActivity : AppCompatActivity() {
             if (validateEditText(addETTitle, addETTitleL)
                 && validateEditText(addETDesc, addETDescL)
             ) {
-                addTaskDialog.dismiss()
+
                 val newTask = Task(
                     UUID.randomUUID().toString(),
                     addETTitle.text.toString().trim(),
                     addETDesc.text.toString().trim(),
                     Date()
                 )
-                taskViewModel.insertTask(newTask).observe(this) {
-                    when (it.status) {
-                        Status.LOADING -> {
-                            loadingDialog.show()
-                        }
-
-                        Status.SUCCESS -> {
-                            loadingDialog.dismiss()
-                            if (it.data?.toInt() != -1) {
-                                longToastShow("Task Added Successfully")
-                            }
-                        }
-
-                        Status.ERROR -> {
-                            loadingDialog.dismiss()
-                            it.message?.let { it1 -> longToastShow(it1) }
-                        }
-                    }
-
-                }
+                hideKeyBoard(it)
+                addTaskDialog.dismiss()
+                taskViewModel.insertTask(newTask)
             }
         }
         // Add task end
@@ -169,25 +157,6 @@ class MainActivity : AppCompatActivity() {
                 taskViewModel
 //                .deleteTask(task)
                     .deleteTaskUsingId(task.id)
-                    .observe(this) {
-                        when (it.status) {
-                            Status.LOADING -> {
-                                loadingDialog.show()
-                            }
-
-                            Status.SUCCESS -> {
-                                loadingDialog.dismiss()
-                                if (it.data != -1) {
-                                    longToastShow("Task Deleted Successfully")
-                                }
-                            }
-
-                            Status.ERROR -> {
-                                loadingDialog.dismiss()
-                                it.message?.let { it1 -> longToastShow(it1) }
-                            }
-                        }
-                    }
             } else if (type == "update") {
                 updateETTitle.setText(task.title)
                 updateETDesc.setText(task.description)
@@ -202,64 +171,60 @@ class MainActivity : AppCompatActivity() {
 //                           here i Date updated
                             Date()
                         )
+                        hideKeyBoard(it)
                         updateTaskDialog.dismiss()
-                        loadingDialog.show()
                         taskViewModel
-//                            .updateTask(updateTask)
-                            .updateTaskPaticularField(
-                                task.id,
-                                updateETTitle.text.toString().trim(),
-                                updateETDesc.text.toString().trim()
-                            )
-                            .observe(this) {
-                                when (it.status) {
-                                    Status.LOADING -> {
-                                        loadingDialog.show()
-                                    }
-
-                                    Status.SUCCESS -> {
-                                        loadingDialog.dismiss()
-                                        if (it.data != -1) {
-                                            longToastShow("Task Updated Successfully")
-                                        }
-                                    }
-
-                                    Status.ERROR -> {
-                                        loadingDialog.dismiss()
-                                        it.message?.let { it1 -> longToastShow(it1) }
-                                    }
-                                }
-                            }
+                            .updateTask(updateTask)
+//                            .updateTaskPaticularField(
+//                                task.id,
+//                                updateETTitle.text.toString().trim(),
+//                                updateETDesc.text.toString().trim()
+//                            )
                     }
                 }
                 updateTaskDialog.show()
             }
         }
         mainBinding.taskRV.adapter = taskRVVBListAdapter
-        taskRVVBListAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver()
-        {
+        taskRVVBListAdapter.registerAdapterDataObserver(object :
+            RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 mainBinding.taskRV.smoothScrollToPosition(positionStart)
             }
         })
         callGetTaskList(taskRVVBListAdapter)
+        taskViewModel.getTaskList()
+        statusCallback()
     }
 
-    private fun callGetTaskList(taskRecyclerViewAdapter: TaskRVVBListAdapter) {
-        loadingDialog.show()
-        CoroutineScope(Dispatchers.Main).launch {
-            taskViewModel.getTaskList().collect {
+    private fun statusCallback() {
+        taskViewModel
+            .statusLiveData
+            .observe(this) {
                 when (it.status) {
                     Status.LOADING -> {
                         loadingDialog.show()
                     }
 
                     Status.SUCCESS -> {
-                        it.data?.collect { taskList ->
-                            loadingDialog.dismiss()
-                            taskRecyclerViewAdapter.submitList(taskList)
+                        loadingDialog.dismiss()
+                        when (it.data as StatusResult) {
+                            Added -> {
+                                Log.d("StatusResult", "Added")
+                            }
+
+                            Deleted -> {
+                                Log.d("StatusResult", "Deleted")
+
+                            }
+
+                            Updated -> {
+                                Log.d("StatusResult", "Updated")
+
+                            }
                         }
+                        it.message?.let { it1 -> longToastShow(it1) }
                     }
 
                     Status.ERROR -> {
@@ -267,8 +232,36 @@ class MainActivity : AppCompatActivity() {
                         it.message?.let { it1 -> longToastShow(it1) }
                     }
                 }
-
             }
+    }
+
+    private fun callGetTaskList(taskRecyclerViewAdapter: TaskRVVBListAdapter) {
+
+        CoroutineScope(Dispatchers.Main).launch {
+            taskViewModel
+                .taskStateFlow
+                .collectLatest {
+                    Log.d("status", it.status.toString())
+
+                    when (it.status) {
+                        Status.LOADING -> {
+                            loadingDialog.show()
+                        }
+
+                        Status.SUCCESS -> {
+                            loadingDialog.dismiss()
+                            it.data?.collect { taskList ->
+                                taskRecyclerViewAdapter.submitList(taskList)
+                            }
+                        }
+
+                        Status.ERROR -> {
+                            loadingDialog.dismiss()
+                            it.message?.let { it1 -> longToastShow(it1) }
+                        }
+                    }
+
+                }
         }
     }
 }
