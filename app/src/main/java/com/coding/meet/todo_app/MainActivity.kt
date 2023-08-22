@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Query
 import com.coding.meet.todo_app.adapters.TaskRVVBListAdapter
 import com.coding.meet.todo_app.databinding.ActivityMainBinding
 import com.coding.meet.todo_app.models.Task
@@ -196,6 +199,33 @@ class MainActivity : AppCompatActivity() {
         callGetTaskList(taskRVVBListAdapter)
         taskViewModel.getTaskList()
         statusCallback()
+
+        callSearch()
+
+    }
+
+    private fun callSearch() {
+        mainBinding.edSearch.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            override fun afterTextChanged(query: Editable) {
+                if (query.toString().isNotEmpty()){
+                    taskViewModel.searchTaskList(query.toString())
+                }else{
+                    taskViewModel.getTaskList()
+                }
+            }
+        })
+
+        mainBinding.edSearch.setOnEditorActionListener{ v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                hideKeyBoard(v)
+                return@setOnEditorActionListener true
+            }
+            false
+        }
     }
 
     private fun statusCallback() {
