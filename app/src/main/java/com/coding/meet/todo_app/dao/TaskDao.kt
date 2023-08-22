@@ -33,4 +33,6 @@ interface TaskDao {
     suspend fun updateTaskPaticularField(taskId:String,title:String,description:String): Int
 
 
+    @Query("SELECT * FROM Task WHERE taskTitle LIKE :query ORDER BY date DESC")
+    fun searchTaskList(query: String) : Flow<List<Task>>
 }
