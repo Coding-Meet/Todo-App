@@ -7,75 +7,91 @@
     android:background="@color/mainBackgroundColor"
     tools:context=".MainActivity">
 
-    <LinearLayout
+
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:background="@color/mainBackgroundColor">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp"
-            android:text="Welcome Back"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="4dp"
-            android:text="Today's Task"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/SearchInputLayout"
-            android:id="@+id/edSearchL"
+        <com.google.android.material.appbar.MaterialToolbar
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginHorizontal="10dp"
-            app:startIconDrawable="@drawable/ic_search"
-            app:errorEnabled="false"
-            app:hintEnabled="false">
+            app:contentInsetStart="0dp"
+            app:layout_scrollFlags="scroll">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edSearch"
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:hint="Enter search title"
-                android:imeOptions="actionSearch"
-                android:inputType="text" />
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"
+                    android:text="Welcome Back"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="4dp"
+                    android:text="Today's Task"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/taskRV"
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:orientation="vertical"
-            android:paddingBottom="100dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/view_task_layout" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/edSearchL"
+                    style="@style/SearchInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="8dp"
+                    app:errorEnabled="false"
+                    app:hintEnabled="false"
+                    app:startIconDrawable="@drawable/ic_search">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:hint="Enter search title"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
 
 
-    </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.appbar.MaterialToolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/taskRV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="vertical"
+        android:overScrollMode="never"
+        android:paddingBottom="100dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:listitem="@layout/view_task_layout" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/addTaskFABtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:backgroundTint="@color/black"
         android:text="Add Task"
-        android:id="@+id/addTaskFABtn"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
