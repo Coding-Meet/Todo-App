@@ -20,35 +20,51 @@
             app:layout_scrollFlags="scroll">
 
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/welcomeTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="16dp"
                     android:text="Welcome Back"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/todayTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_below="@id/welcomeTxt"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginTop="4dp"
                     android:text="Today's Task"
                     android:textSize="28sp"
                     android:textStyle="bold" />
 
 
+                <ImageView
+                    android:id="@+id/sortImg"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_above="@id/edSearchL"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_sort" />
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/edSearchL"
                     style="@style/SearchInputLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/todayTxt"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginHorizontal="10dp"
                     android:layout_marginTop="8dp"
                     app:errorEnabled="false"
@@ -67,7 +83,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
-            </LinearLayout>
+            </RelativeLayout>
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
