@@ -1,5 +1,13 @@
 ## TODO/Note App Tutorial MVVM | Room DB | Android Studio Kotlin
 
+# [YouTube Video Link](https://youtube.com/playlist?list=PLlSuJy9SfzvFqbcWKhs-a3NtYQicyCFo8&si=qzFBbjdimUdyY2t6)
+
+![TODO/Note App](screenshot/image1.png)
+![TODO/Note App](screenshot/image2.png)
+![TODO/Note App](screenshot/image3.png)
+![TODO/Note App](screenshot/image4.png)
+![TODO/Note App](screenshot/image5.png)
+
 Welcome to the Comprehensive TODO/Note App Tutorial Playlist! 📱📝
 
 In this tutorial playlist, you'll learn how to create a robust TODO/Note App from scratch using the power of MVVM architecture and Room Database with Kotlin in Android Studio. Whether you're a beginner or seeking to enhance your skills, this playlist covers it all.
