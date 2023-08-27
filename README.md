@@ -41,3 +41,12 @@ Implement the ability to restore accidentally deleted tasks for a seamless user 
 
 ## 📌Part 12: Enhancing UI with AppBar and RecyclerView
 Elevate your app's UI with dynamic AppBar integration and smooth scrolling.
+
+## 📌 Part 13: MVVM, Room DB, Sort By Task
+Learn to sort tasks effectively using MVVM architecture and Room Database.
+
+## 📌 Part 14: Nested ScrollView RecyclerView
+Enhance your app's interface with Nested ScrollView and RecyclerView for efficient data presentation.
+
+## 📌 Part 15: Staggered Grid & Linear Layout Managers
+Discover the art of engaging layouts using Staggered Grid and Linear Layout Managers.
