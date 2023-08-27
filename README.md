@@ -1,6 +1,4 @@
-# Todo-App
-TODO/Note App Tutorial MVVM | Room DB | Android Studio Kotlin
-
+## TODO/Note App Tutorial MVVM | Room DB | Android Studio Kotlin
 
 Welcome to the Comprehensive TODO/Note App Tutorial Playlist! 📱📝
 
