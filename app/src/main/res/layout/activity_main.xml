@@ -96,9 +96,8 @@
         android:orientation="vertical"
         android:overScrollMode="never"
         android:paddingBottom="100dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/view_task_layout" />
+         />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/addTaskFABtn"
